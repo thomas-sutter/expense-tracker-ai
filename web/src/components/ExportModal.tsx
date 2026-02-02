@@ -29,6 +29,14 @@ export function ExportModal({ expenses, onClose }: ExportModalProps) {
     return ['all', ...cats];
   }, [expenses]);
 
+  // Format categories for Select component
+  const categoryOptions = useMemo(() => {
+    return categories.map((cat) => ({
+      value: cat,
+      label: cat === 'all' ? 'All Categories' : cat,
+    }));
+  }, [categories]);
+
   // Filter expenses based on date range and category
   const filteredExpenses = useMemo(() => {
     return expenses.filter((expense) => {
@@ -141,13 +149,8 @@ export function ExportModal({ expenses, onClose }: ExportModalProps) {
             <Select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-            >
-              {categories.map((cat) => (
-                <option key={cat} value={cat}>
-                  {cat === 'all' ? 'All Categories' : cat}
-                </option>
-              ))}
-            </Select>
+              options={categoryOptions}
+            />
           </div>
 
           {/* Filename */}
