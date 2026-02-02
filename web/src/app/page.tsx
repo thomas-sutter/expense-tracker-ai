@@ -7,13 +7,14 @@ import { DashboardCards } from '@/components/DashboardCards';
 import { CategoryChart } from '@/components/CategoryChart';
 import { ExpenseList } from '@/components/ExpenseList';
 import { ExpenseForm } from '@/components/ExpenseForm';
+import { ExportModal } from '@/components/ExportModal';
 import { Button } from '@/components/ui/Button';
 import { Toast } from '@/components/ui/Toast';
-import { exportExpensesToCsv } from '@/utils/exportCsv';
 
 export default function Home() {
   const { expenses, addExpense, updateExpense, deleteExpense, isLoaded } = useExpenses();
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isExportModalOpen, setIsExportModalOpen] = useState(false);
   const [editingExpense, setEditingExpense] = useState<Expense | undefined>();
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
@@ -48,13 +49,12 @@ export default function Home() {
     setEditingExpense(undefined);
   };
 
-  const handleExport = () => {
-    exportExpensesToCsv(expenses);
-    showToast('Expenses exported to CSV');
-  };
-
   const openAddForm = () => {
     setIsFormOpen(true);
+  };
+
+  const openExportModal = () => {
+    setIsExportModalOpen(true);
   };
 
   if (!isLoaded) {
@@ -91,11 +91,11 @@ export default function Home() {
           <div className="flex flex-wrap gap-2 sm:gap-3 w-full sm:w-auto">
             <Button
               variant="secondary"
-              onClick={handleExport}
+              onClick={openExportModal}
               className="flex-1 sm:flex-none"
               disabled={expenses.length === 0}
             >
-              Export CSV
+              Export Data
             </Button>
             <Button
               onClick={openAddForm}
@@ -119,6 +119,13 @@ export default function Home() {
               />
             </div>
           </div>
+        )}
+
+        {isExportModalOpen && (
+          <ExportModal
+            expenses={expenses}
+            onClose={() => setIsExportModalOpen(false)}
+          />
         )}
 
         <div className="space-y-6">
